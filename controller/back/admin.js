@@ -48,7 +48,7 @@ router.post('/add_admin', function(req,res){
 });
 
 
-router.get('/list_admin', (req, res) => {
+router.post('/list_admin', (req, res) => {
 
 
   query_admin.getAll().then(admin => {

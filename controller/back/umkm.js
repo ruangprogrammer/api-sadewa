@@ -65,7 +65,7 @@ router.post('/add_umkm', function(req,res){
 
 
 
-router.get('/list_umkm', (req, res, next) => {
+router.post('/list_umkm', (req, res, next) => {
 
   query_umkm.getMerchant().then(umkm => {
     res.send({ status: true, text: 'data merchant found ',data_merchant: umkm })

@@ -47,7 +47,7 @@ router.post('/user_add', function(req,res){
 
 
 
-router.get('/userlevel', (req, res, next) => {
+router.post('/userlevel', (req, res, next) => {
 
   query_user.getUserLevel().then(user => {
     res.send({ status: true, text: 'data User ',data_level: user })

@@ -4,23 +4,22 @@ const router = express.Router();
 
 const query_customer = require('../../model/back/customer');
 
-router.get('/', function (req, res) {
+router.post('/', function (req, res) {
     //return 'tetd';//\
     res.send({ error: true, message: 'Login Sadewa Internasional customer saller' })
 });
 
 
-router.get('/login', function (req, res) {
+router.post('/login', function (req, res) {
     //return 'tetd';//\
     res.send({ error: true, message: 'Login Sadewa Internasional customer saller' })
 });
 
-router.get('/list', (req, res) => {
+router.post('/list', (req, res) => {
 
   query_customer.getAll().then(customer => {
 
     res.send({ status: true, text: 'Login Berhasil',data_customer: customer })
-
 
   });
 

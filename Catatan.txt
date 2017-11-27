@@ -1,0 +1,211 @@
+https://www.getpostman.com/collections/ca6cbfc3f017cec7e379
+http://jnck.mlskoding.com/api/
+
+test initial commit ffffffffff
+
+https://github.com/expressjs/cors
+
+node js set header access control all routing
+
+https://enable-cors.org/server_expressjs.html
+
+https://stackoverflow.com/questions/30761154/how-to-enable-cors-on-express-js-4-x-on-all-files
+
+
+https://gitlab.com/ptsolusiinovasimandiri/api-sadewamarket.git
+
+
+cd existing_folder
+git init
+git remote add origin https://gitlab.com/ptsolusiinovasimandiri/api-sadewainternasional.git
+git add .
+git commit -m "Initial commit"
+git push -u origin master
+
+http://international.cyberumkm.com/   version with PHP  sadewainter@cyberumkm.com
+http://sadewajawara.cyberumkm.com/    version with REACT
+............................................................................
+CARA REMOTE gitlab
+
+1) Clone the repository in another directory.
+
+2) run "git remote -v" and get the value of origin
+
+3) In your case it looks like the value is "https://github.com/LongKnight/git-basics.git"
+
+4) So come back to your working directory, and run "git remote add origin2 https://github.com/LongKnight/git-basics.git"
+
+5) Run "git remote remove origin"
+
+6) Now run "git remote rename origin2 origin"
+
+7) Check what's the value of origin now with "git remote -v"
+
+8) It should be correctly set now. If so, run "git push"
+
+9) git add Catatan.txt
+
+10) git commit -m "initial commit"
+
+11) git push origin master
+
+
+
+
+app.get('/', (req, res) => {
+ // var data = "2018-08-1e2";//do shash'owania";
+ // res.json(test);
+  //return 
+ // var a = crypto.createHash('md5').update(data).digest('hex');
+  // res.json(a);
+   res.json(['WELCOME API SADEWA INTERNASIONAL']);
+   //return res.send({ error: true, message: 'hello snhdgfjsdfhs djfshdjfsd sjdfhsdf sjkdfhsjdf sjdfh' })
+});
+
+//CONTROLLER
+
+router.put('/update_token/:id', (req,res, next) => {   //oke
+
+ // res.json('test udpaet token');
+  //console.log('Time: %d', Date.now());
+
+/*   var Xmas95 = new Date('December 25, 1995 23:15:30');
+   var d = Xmas95.getDate();
+// var d = Date.now(); 
+   res.json(d);
+*/
+
+  //var data = "2018-08-1e2"; 
+  //var token = crypto.createHash('md5').update(data).digest('hex');
+/*  var username = req.body.username;
+  var password = req.body.password;*/
+  var token = "lsdklskdsd";
+  var token_expired = "2017-09-19 01-09-10";
+   query_user.update(req.params.id,token,token_expired, req.body).then(user => {
+      res.json("udpate berhasil");
+    });
+
+});
+
+
+//MODEL
+
+  update(id, token, token_expired) {
+   return knex('_user').
+              where('user_id', id).
+                update({user_token:token,
+                        user_token_expired:token_expired});
+  }
+
+
+
+  https://stackoverflow.com/questions/34828819/stop-the-file-upload-in-multer-if-the-user-validation-fails
+
+
+
+*****************************************************************************************************
+DEVELOMENT API SADEWA INTERNASIONAL
+https://docs.google.com/spreadsheets/d/1ScmFac1VT7X_bWGOpPrz_zznsqz0yqKmw45PnU8d2Bc/edit#gid=0
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  1. AUTH
+      a. login                                 http://localhost:5000/back/auth/login    POST
+      b. register                              http://localhost:5000/back/auth/register  POST
+      c. status                                ?
+
+  2. MENU
+      a. sidebar                               http://localhost:5000/back/modul/list         POST  
+
+  3. PRODUCT
+      a. list category                         http://localhost:5000/back/product/list_product_category
+      b. add_category_product                  urung   http://localhost:5000/back/product/add_category_product
+      c. parent_category                       urung   http://localhost:5000/back/product/parent_category 
+      d. child_category                        urung   http://localhost:5000/back/product/child_category
+      e. add_product                           http://localhost:5000/back/product/create/
+      f. detail_product                        urung   http://localhost:5000/back/product/detail_product
+      g. detail_edit                           urung   http://localhost:5000/back/product/detail_edit
+      h. select_cat_lang                       http://localhost:5000/back/product/select_cat_lang
+      i. list_cat_lang                         http://localhost:5000/back/product/list_cat_lang
+      j. product_unit                          http://localhost:5000/back/product/product_unit
+
+  4. USER LEVEL
+      a. user list                             http://localhost:5000/back/user/userlevel
+      b. add_user                              http://localhost:5000/back/user/user_add                       
+
+  5. UMKM
+      a. add_umkm                              http://localhost:5000/back/umkm/add_umkm                  
+      b. list_umkm                             http://localhost:5000/back/umkm/list_umkm
+
+  6. ADMIN
+      a. add_admin                             http://localhost:5000/back/admin/add_admin
+      b. list_admin                            http://localhost:5000/back/admin/list_admin
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  1. AUTH
+      a. login                                  http://localhost:5000/back/auth/login  
+         user_email:edi2992@gmail.com
+         user_password:admin
+      -------------------------------------------------------------------------------------
+      b. register                               http://localhost:5000/back/auth/register
+         user_level_id:user_level_id,
+         user_name:jancuk ddddd dddd i
+         user_email:edi29929@yahoo.com
+         user_username:user_username,
+         user_password:user_password,
+         user_status:user_status,
+         user_token:user_token
+      -------------------------------------------------------------------------------------
+      c. status
+  2. MENU
+      a. sidebar                      http://localhost:5000/back/modul/list
+  3. PRODUCT
+      a. list category
+      b. add_category_product
+      c. parent_category
+      d. child_category
+      e. add_product  http://localhost:5000/back/product/create
+            product_merchant:22
+            product_name:test 923892382
+            product_sort_desc:deskripsi
+            product_description:Product ini mengandung bahan peledak jangan di beli
+            product_category:INT333333333333333333
+            product_price:INT3333333333333333333
+            product_insurance:INT3333333
+            product_status:333333
+            product_tag:333333333333333333333333333333333333
+  4. USER LEVEL
+      a. user list     http://localhost:5000/back/user/userlevel
+             
+      b. add_user      http://localhost:5000/back/user/user_add 
+          user_level:2
+          user_name:Dynamo
+          user_token:2121deeewewewewewwewe
+
+
+  5. UMKM
+      a. add_umkm   http://localhost:5000/back/umkm/add_umkm
+        merchant_type:22
+        merchant_name:Test 
+        merchant_address:Canada
+        merchant_email:email@yahoo.com
+        merchant_phone:012812
+        merchant_desc:sjdsd
+        merchant_status:jsd
+        merchant_city:22
+
+      b. list_umkm         http://localhost:5000/back/umkm/list_umkm
+
+  6. ADMIN
+      a. add_admin    http://localhost:5000/back/admin/add_admin
+        user_level_id:2
+        user_name:Dynamo
+        user_email:dinamo@yahoo.com
+        user_username:dinamo
+        user_password:dinamo9q281
+
+      b. list_admin     http://localhost:5000/back/admin/list_admin
+
+
+
+http://vlad-ignatov.github.io/react-numeric-input/  sinau react
+Expected corresponding JSX closing tag for 

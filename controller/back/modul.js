@@ -24,11 +24,15 @@ router.post('/list', upload.single(), (req, res) => {
 
  	query_modul.getShow(id).then(modul => {
     
-    if(modul == ''){
-   		 res.send({status:false,text:"tidak ada data sidebar", items: "array" })
-	}else{
-		res.send({status:true,text:"side bar ditemukan",items:modul})
-	}
+      if(modul == ''){
+
+     		  res.send({status:false,text:"tidak ada data sidebar", items: "array" })
+
+  	   }else{
+
+  		    res.send({status:true,text:"side bar ditemukan",items:modul})
+
+  	}
 
   });
 

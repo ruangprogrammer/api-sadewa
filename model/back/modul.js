@@ -17,17 +17,59 @@ module.exports = {
 
     //console.log(id)
     
-    return knex.select('*').from('_modules').where('module_level',id).map(function(row) {
+
+      return knex('_user_level_authority').where('user_level_id',id).map(function (module){
+
+       return knex('_modules').where('module_id',module.module_id).orderBy('module_order','ASC').map(function(row){
+
+            var module_desc =row.module_desc;
+
+            var show_title = (module_desc=='title') ? true : false;
+
+            return knex("_modules").where('module_parent_id', row.module_id).reduce(function(parent, rows) {
+
+              parent.data.push({module_id:rows.module_id,
+                                name:rows.module_name,
+                                icon:rows.module_icon,
+                                url:rows.module_link,
+                                checked:false});
+              parent.n++;
+
+              return parent;
+            }, {n:0, data:[]})
+            .then(function(img) {
+              return {
+                module_id:row.module_id,
+                name:row.module_name,
+                icon:row.module_icon,
+                title:show_title,
+                url:row.module_link,
+                checked:false,
+                children:img.data
+              };
+            });
+
+           })
+
+       
+
+      })
+
+/*    return knex.select('*').from('_modules').where('module_level',id).map(function(row) {
+          
           var module_desc =row.module_desc;
+
           var show_title = (module_desc=='title') ? true : false;
 
         return knex("_modules").where('module_parent_id', row.module_id).reduce(function(parent, rows) {
+
           parent.data.push({module_id:rows.module_id,
                             name:rows.module_name,
                             icon:rows.module_icon,
                             url:rows.module_link,
                             checked:false});
           parent.n++;
+
           return parent;
         }, {n:0, data:[]})
         .then(function(img) {
@@ -41,7 +83,7 @@ module.exports = {
             children:img.data
           };
         });
-      });
+      });*/
 
   },
 

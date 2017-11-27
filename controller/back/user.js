@@ -19,8 +19,6 @@ const upload = multer({ storage:storage});
 
 
 
-
-
 router.post('/user_add', function(req,res){
 
   req.checkBody("user_level", "Name is required.").notEmpty(); 

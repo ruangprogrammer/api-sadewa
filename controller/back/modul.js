@@ -20,9 +20,11 @@ const upload = multer({ storage:storage});
 
 router.post('/list', upload.single(), (req, res) => {
 
-	var id = req.body.user_id;
+	var id = req.body.user_id;   
 
- 	query_modul.getShow(id).then(modul => {
+  	//query_modul.list_module(id).then(modul => {
+
+     query_modul.getShow(id).then(modul => {
     
       if(modul == ''){
 

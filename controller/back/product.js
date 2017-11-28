@@ -177,9 +177,9 @@ router.post('/create', upload.any('image'),  function(req,res, next){
       req.files.forEach(data => {
 
             gm(data.path)
-            .resize(240, 240, '!')
+            .resize(300, 300, '!')
             .gravity("Center")
-            .extent(240,250)
+            .extent(300,300)
             .noProfile()
             .write('./media/images/thumbs/product_thumbs' + Date.now()+data.originalname+'.jpg', function (err) {
               res.end();
@@ -190,9 +190,9 @@ router.post('/create', upload.any('image'),  function(req,res, next){
       req.files.forEach(data => {
 
             gm(data.path)
-            .resize(640, 640, '!')
+            .resize(800, 800, '!')
             .gravity("Center")
-            .extent(640,640)
+            .extent(800,800)
             .noProfile()
             .write('./media/images/products/products_640X640' + Date.now()+data.originalname+'.jpg', function (err) {
               res.end();

@@ -1,132 +1,165 @@
 const knex = require('../knex'); // the connection!
 
+const Promise = require('bluebird');
+
 module.exports = {
 
-  getAll() {
-    //return knex('_customer');
-    var data = knex.select('module_id',
-                          'module_name as name',
-                          'module_icon as icon',
-                          'module_link as url').from('_modules');
-    return data;//knex.select('module_name as name').from('_modules');//.where('module_level',2);
-    //return knex.('_modules');
-  },
+      getShow(id){
 
 
-  getShow(id){
 
-    //console.log(id)
-    
+       return knex.select('module_id').from('_user_level_authority').where('user_level_id',id).map(function(row) {
 
-      return knex('_user_level_authority').where('user_level_id',id).map(function (module){
+                return knex('_modules').where('module_id',row.module_id).orderBy('module_order','ASC').first().then(function(ssss){
 
-       return knex('_modules').where('module_id',module.module_id).orderBy('module_order','ASC').map(function(row){
+                    var module_desc =row.module_desc;
 
-            var module_desc =row.module_desc;
+                    var show_title = (module_desc=='title') ? true : false;
 
-            var show_title = (module_desc=='title') ? true : false;
+                    return knex("_modules").where('module_parent_id', ssss.module_id).orderBy('module_order','ASC').reduce(function(parent, rows) {
 
-            return knex("_modules").where('module_parent_id', row.module_id).reduce(function(parent, rows) {
+                      parent.data.push({module_id:rows.module_id,
+                                        name:rows.module_name,
+                                        icon:rows.module_icon,
+                                        url:rows.module_link,
+                                        checked:false});
+                      parent.n++;
 
-              parent.data.push({module_id:rows.module_id,
-                                name:rows.module_name,
-                                icon:rows.module_icon,
-                                url:rows.module_link,
-                                checked:false});
-              parent.n++;
+                      return parent;
+                    }, {n:0, data:[]})
+                    .then(function(img) {
+                      return { 
+                        module_id:ssss.module_id,
+                        name:ssss.module_name,
+                        icon:ssss.module_icon,
+                        title:show_title,
+                        url:ssss.module_link,
+                        checked:false,
+                        children:img.data
+                      };
+                    });
+               });
 
-              return parent;
-            }, {n:0, data:[]})
-            .then(function(img) {
-              return {
-                module_id:row.module_id,
-                name:row.module_name,
-                icon:row.module_icon,
-                title:show_title,
-                url:row.module_link,
-                checked:false,
-                children:img.data
-              };
-            });
+            }).then(function(obj) {
 
-           })
-
-       
-
-      })
-
-/*    return knex.select('*').from('_modules').where('module_level',id).map(function(row) {
+                return obj;
           
-          var module_desc =row.module_desc;
 
-          var show_title = (module_desc=='title') ? true : false;
-
-        return knex("_modules").where('module_parent_id', row.module_id).reduce(function(parent, rows) {
-
-          parent.data.push({module_id:rows.module_id,
-                            name:rows.module_name,
-                            icon:rows.module_icon,
-                            url:rows.module_link,
-                            checked:false});
-          parent.n++;
-
-          return parent;
-        }, {n:0, data:[]})
-        .then(function(img) {
-          return {
-            module_id:row.module_id,
-            name:row.module_name,
-            icon:row.module_icon,
-            title:show_title,
-            url:row.module_link,
-            checked:false,
-            children:img.data
-          };
-        });
-      });*/
-
-  },
+          });
 
 
-  getModule(){
-    const innerObj = [];
-    var data = knex.select('*').from('_modules');//.whereNot('module_level','3');
 
-    // for (var i = data.length - 1; i >= 0; i--) {
-    //   //const innerObj = {};
-    //       innerObj["module_id"]     = data[i].module_id;
-    //       innerObj["module_name"]   = data[i].module_name;
-    //       innerObj["module_icon"] = data[i].module_icon;
-    //       newModule.push(innerObj);
-    // }
-    //const innerObj = {};
-    return data;
-   /* knex.select('name').from('users').limit(10).map(function(row) {
-      return row.name;
-    })*/
+//------------------------------------------------------------------------------   v ----------------------------------------------------------------------------------------------------------
+  
+     //var a =
+   /*  return knex.select('module_id').from('_user_level_authority').reduce(function(memo, row) {
+       
+        return knex('_modules').where('module_id',row.module_id)
+        .the(function(){
 
-   // var  items = 
+        })
 
-   // return knex.select('*').from('_modules');//.map(function(row){
-  },
+        memo.names.push({data_oke:row.module_id});
+        memo.count++;
 
-  getModuleId(id){
-    //return id;
-     return knex.select('*').from('_modules').where('module_parent_id', id);//.first();
-  }
+        return memo;
 
-  //,
- /* getOne(id) {
-    return knex('sticker').where('id', id).first();
-  },
-  create(sticker) {
-    return knex('sticker').insert(sticker, '*');
-  },
-  update(id, sticker) {
-    return knex('sticker').where('id', id).update(sticker, '*');
-  },
-  delete(id) {
-    return knex('sticker').where('id', id).del();
-  }*/
+          }, {count: 0, names: []})
+
+          .then(function(obj) {
+
+            return { module_id :obj.names, data_asu:'asasasas'};
+
+        });*/
+
+//------------------------------------------------------------------------------   v ----------------------------------------------------------------------------------------------------------
+       //return 
+     //  console.log(id);
+   /*  return knex('_user_level_authority').where('user_level_id',id).reduce(function (module, row){ 
+     
+            return knex('_modules').where('module_id',row.module_id);
+
+     }, {count:0, data:[]}).then(function(obj){
+
+       });*/
+
+//       return Promise.all(a);
+      //return a;
+
+
+
+      //return a;
+     // return da.data.module_id;
+
+     /*  return knex('_user_level_authority').where('user_level_id',id).map(function (module){
+
+             return knex('_modules').where('module_id',module.module_id).orderBy('module_order','ASC').map(function(row){
+
+                  var module_desc =row.module_desc;
+
+                  var show_title = (module_desc=='title') ? true : false;
+
+                  return knex("_modules").where('module_parent_id', row.module_id).reduce(function(parent, rows) {
+
+                    parent.data.push({module_id:rows.module_id,
+                                      name:rows.module_name,
+                                      icon:rows.module_icon,
+                                      url:rows.module_link,
+                                      checked:false});
+                    parent.n++;
+
+                    return parent;
+                  }, {n:0, data:[]})
+                  .then(function(img) {
+                    return { 
+                      module_id:row.module_id,
+                      name:row.module_name,
+                      icon:row.module_icon,
+                      title:show_title,
+                      url:row.module_link,
+                      checked:false,
+                      children:img.data
+                    };
+                  });
+
+                 })
+
+            })
+*/
+
+
+      },
+
+      list_module (id) {
+
+         return knex('_user_level_authority').where('user_level_id',id).map(function (module){
+
+                 return knex('_modules').select('module_id',
+                                           'module_name AS name',
+                                           'module_icon AS icon',
+                                           'module_id',
+                                           'module_link AS url').where('module_id',module.module_id).then(function (rows) {
+
+                  let promises = rows.map(function (element) {
+                      element['checked'] = false
+                      return knex('_modules').select('module_name AS name','module_icon AS icon','module_id','module_link AS url').where('module_parent_id',element.module_id)
+                          .then(function (docs) {
+                              element['children'] = docs
+                              return element;
+                          })
+                  })
+
+                  return Promise.all(promises);//.first();
+
+
+              }).then(function (elements) {
+                  return  elements;
+              })
+
+
+         })
+      
+    }
 
 }
+

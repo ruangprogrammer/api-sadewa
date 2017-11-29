@@ -7,7 +7,7 @@ var Auth = {
 
             var token = req.body.token;
 
-            console.log(token);
+           // console.log(token);
             //res.json(token);
             query_token.check_token(token, req.body).then(user => {
 

@@ -32,10 +32,11 @@ router.post('/user_add', function(req,res){
     } else {
 
       var user_name     = req.body.user_name;
-      var user_level    = req.body.user_level;
+      var user_level    = req.body.user_level;  
+      var module_id     = 97777;
       var user_token    = "ekjrkedfs";
 
-      query_user.create(user_level,user_name).then(user => {
+      query_user.create(user_name,user_level,module_id).then(user => {
         res.send({status: true, text: 'user level added success'});
       });
     

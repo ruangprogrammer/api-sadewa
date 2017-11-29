@@ -8,8 +8,6 @@ module.exports = {
 
 
   getShow(country_id){
-
-
    return knex('_product_category_lang').
    join('_product_category','_product_category.product_cat_id','=','_product_category_lang.product_cat_id').
    where('country_id',country_id).
@@ -108,35 +106,31 @@ module.exports = {
 },
 
 Bahasa(country_id){
- return knex('_lang_text').join('_lang_key','_lang_key.lang_key_id','=','_lang_text.lang_key_id').where('country_id',country_id).map(function(ro){
-  return knex('_lang_group').where('lang_group_id', ro.lang_group_id ).reduce(function(cook,row) {
-     cook.dat.push(row.lang_group_key)
-    return cook
-  },{dat:[]}).then(function(re){ 
+   return knex('_lang_text').join('_lang_key','_lang_key.lang_key_id','=','_lang_text.lang_key_id').where('country_id',country_id).map(function(ro){
+    return knex('_lang_group').where('lang_group_id', ro.lang_group_id ).reduce(function(cook,row) {
+       cook.dat.push(row.lang_group_key)
+      return cook
+    },{dat:[]}).then(function(re){ 
 
-    return {jancok:ro.lang_text,cek:re.dat}})
+      return {jancok:ro.lang_text,cek:re.dat}})
 
-})
+  })
 },
 
 
-Cek(country_id){
- return knex('_lang_group').reduce(function(cok,group){
-  return knex('_lang_key').where('lang_group_id',group.lang_group_id).map(function(key){
-  return knex('_lang_text').where('lang_key_id', key.lang_key_id).where('country_id',country_id).map(function(text) {
+    Cek(country_id){
+     return knex('_lang_group').reduce(function(cok,group){
+      return knex('_lang_key').where('lang_group_id',group.lang_group_id).map(function(key){
+      return knex('_lang_text').where('lang_key_id', key.lang_key_id).where('country_id',country_id).map(function(text) {
 
-    return {
-      lang_group_key:group.lang_group_key,
-      lang_key:key.lang_key,
-      lang_text:text.lang_text
-    }
-  })
-})
+        return {
+          lang_group_key:group.lang_group_key,
+          lang_key:key.lang_key,
+          lang_text:text.lang_text
+        }
+      })
+    })
   })
 }
 
-
-
-
-//==================
 }

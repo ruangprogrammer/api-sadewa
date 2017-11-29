@@ -36,6 +36,7 @@
         app.use('/back/auth', require('./controller/back/auth'));
         app.use('/back/customer', require('./controller/back/customer'));
         app.use('/back/modul', require('./controller/back/modul'));
+        app.use('/back/content', require('./controller/back/content'));
         app.use('/back/product', require('./controller/back/product'));
         app.use('/back/user', require('./controller/back/user'));
         app.use('/back/admin', require('./controller/back/admin'));

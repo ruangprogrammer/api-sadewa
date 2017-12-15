@@ -18,24 +18,76 @@ const storage = multer.diskStorage({
 const upload = multer({ storage:storage});
 
 
-router.post('/list', upload.single(),Auth_mdw.check_token, (req, res) => {
+router.post('/list_old', upload.single(), (req, res) => {
 
-	   var id = req.body.user_id;   
+
+    req.checkBody("user_level_id", "user_level_id is required.").notEmpty(); 
+ 
+    var errors = req.validationErrors();
+    if (errors) {
+      res.send(errors);
+      return;
+    } else {
+	   var id = req.body.user_level_id;   
 
      query_modul.getList(id).then(modul => {
-    
-      if(modul == ''){
+      
+        if(modul == ''){
 
-     		  res.send({status:false,text:"tidak ada data sidebar", items: "array" })
+       		  res.send({status:false,text:"tidak ada data sidebar", items: "array" })
 
-  	   }else{
+    	   }else{
 
-  		    res.send({status:true,text:"side bar ditemukan",items:modul})
+    		    res.send({status:true,text:"side bar ditemukan",items:modul})
 
-  	}
+    	}
 
-  });
+    });
+
+   }
 
 });
+
+
+router.post('/list', upload.single(), (req, res)=>{
+
+    req.checkBody("user_level_id", "user_level_id is required.").notEmpty(); 
+ 
+    var errors = req.validationErrors();
+    if (errors) {
+      res.send(errors);
+      return;
+    } else {
+  
+    let user_level_id       = req.body.user_level_id
+
+    query_modul.user_modul(user_level_id).then((responses)=>{
+      /*  let items = []
+        let module = []
+        items.push(responses)
+        if (responses.length > 0){
+            module.push({status:true, text:"data module found", data_module:items[0]})
+        } else {
+            module.push({status:false, text:"data module found", data_module:[]})
+
+        }*/
+         res.send({status: true, text: "side bar ditemukan", items: responses})
+      // res.json(responses);
+    })
+
+  }
+
+});
+
+
+router.post('/access', upload.single(), (req, res)=>{
+
+     query_modul.getAll().then((responses)=>{
+
+        res.send({status: true, text: "modul ditemukan", items: responses})
+        
+    })
+
+})
 
 module.exports = router;

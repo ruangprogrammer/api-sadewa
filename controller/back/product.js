@@ -23,17 +23,17 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage});//.single('image');
 
 /*    a. list category                         oke
-      b. add_category_product                  urung
+      b. add_category_product                  oke
       c. parent_category                       urung
       d. child_category                        urung
       e. add_product                           oke
-      f. detail_product                        
-      g. detail_edit                           urung
+      f. detail_product                        oke
+      g. detail_edit                           progress
       h. select_cat_lang                       ok
       i. list_cat_lang                         OK
       j. product_unit                          OK      */
 
-router.post('/list_product_category', function(req, res, next){
+router.post('/list_product_category',  upload.any('image'), function(req, res, next){   //OKE
 
   query_product.getListCategory().then(product => {
     res.send({status: true, text: 'category ditemukan', data_cat: product})
@@ -42,9 +42,52 @@ router.post('/list_product_category', function(req, res, next){
 });
 
 
+router.post('/add_category_product',  upload.any('image'), function(req, res, next){   //OKE
+
+   var  product_cat_parent = req.body.cat_parent;
+   var  product_cat_level =  req.body.cat_level;
+   var  product_cat_desc = req.body.cat_desc;
+   var  product_cat_status = req.body.cat_status;
+   var  product_cat_name = req.body.cat_name;
+
+   var image = req.files;
+   var  product_cat_image = image[0].filename;
+  //  console.log(image[0].filename)
 
 
-router.post('/detail_product', function(req, res, next){
+   query_product.addCategoryProduct(product_cat_parent,
+                                      product_cat_level,
+                                      product_cat_image,
+                                      product_cat_desc,
+                                      product_cat_status,
+                                      product_cat_name).then(product_cat => {
+
+        if(product_id == ''){
+
+             res.send({status: false, text: 'failed to add category'})
+
+         }else{
+
+             res.send({status: true, text: 'successfully added category'})
+
+      }
+   
+  
+  });
+
+});
+
+
+router.post('/list_product',  upload.any('image'), function(req, res, next){   //OKE
+
+  query_product.getListProduct().then(product => {
+    res.send({status: true, text: 'data product found', data_product: product})
+  });
+
+});
+
+
+router.post('/detail_product', upload.any('image'), function(req, res, next){   //OKE
 
     var id = req.body.product_id;
     query_product.getProductID(id,req.body).then(detail_product => {
@@ -53,18 +96,33 @@ router.post('/detail_product', function(req, res, next){
 
 });
 
-router.post('/detail_edit', function(req, res, next){
 
- /*   var id = req.body.product_cat_id;
 
-    query_product.getSelectCatLang(id,req.body).then(select => {
-    res.send({status: true, text: 'country found', data_country: select})
-  });*/
+router.post('/detail_edit', upload.any('image'), function(req, res, next){
+
+    var id = req.body.product_id;   //console.lo
+
+    query_product.getDetailEdit(id).then(prod_detail => {
+
+    res.send({status: true, text: 'data product found', data_prod: prod_detail})
+
+  });
+
+   //var numbers =[ 1, 2, 3];
+
+   //var data = 10;
+
+//    numbers.push(data);
+    //numbers = "123333333333"
+
+  //  console.log(numbers)
+   // return numbers;
+
 
 });
 
 
-router.post('/select_cat_lang', function(req, res, next){
+router.post('/select_cat_lang', upload.any('image'), function(req, res, next){
 
     var id = req.body.product_cat_id;
 
@@ -75,7 +133,7 @@ router.post('/select_cat_lang', function(req, res, next){
 });
 
 
-router.post('/list_cat_lang', function(req, res, next){
+router.post('/list_cat_lang', upload.any('image'), function(req, res, next){
 
     query_product.getCatLang().then(cat => {
     res.send({status: true, text: 'cattegory list found', cat_data: cat})
@@ -85,7 +143,7 @@ router.post('/list_cat_lang', function(req, res, next){
 
 
 
-router.post('/product_unit', function(req, res, next){
+router.post('/product_unit', upload.any('image'), function(req, res, next){
 
     query_product.getProductUnit().then(product => {
     res.send({status: true, text: 'unit found', data_data: product})
@@ -125,6 +183,8 @@ router.post('/create', upload.any('image'),  function(req,res, next){
       var images                          = req.files;
       var media_name = req.body.product_name;
       var media_value  = req.files;//body.product_name;
+
+      
       ///var media_value = [];
 
      /* req.files.forEach(data => {

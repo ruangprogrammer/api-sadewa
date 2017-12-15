@@ -1,67 +1,68 @@
 const express = require('express');
-
+//const crypto = require('crypto');
+const query_customer =  require('../../model/back/customer');
+const Auth_mdw = require('../../middlewares/auth');
+const config = require('../../config');
 const router = express.Router();
 
-const query_customer = require('../../model/back/customer');
 
-router.post('/', function (req, res) {
-    //return 'tetd';//\
-    res.send({ error: true, message: 'Login Sadewa Internasional customer saller' })
-});
+const multer   = require('multer');
+const multerS3 = require('multer-s3');
+const fs         = require('fs');
+const gm    = require('gm').subClass({imageMagick:true});
 
-
-router.post('/login', function (req, res) {
-    //return 'tetd';//\
-    res.send({ error: true, message: 'Login Sadewa Internasional customer saller' })
-});
-
-router.post('/list', (req, res) => {
-
-  query_customer.getAll().then(customer => {
-
-    res.send({ status: true, text: 'Login Berhasil',data_customer: customer })
-
-  });
-
-});
-
-/*
-router.get('/:id', isValidId, (req, res, next) => {
-  queries.getOne(req.params.id).then(sticker => {
-    if(sticker) {
-      res.json(sticker);
-    } else {
-      next();
+var storage = multer.diskStorage({
+    destination : function(req, file, cb ){
+      cb(null, 'media/images/products/original/');
+    },
+    filename : function(req, file, cb){
+      cb(null, 'product_' + file.fieldname + '-' + Date.now() + '.jpg');
     }
+});
+var upload = multer({ storage: storage});//.single('image');
+
+
+
+router.post('/count', (req,res) =>{
+
+ query_customer.getListCustomer().then(customer => {
+
+      var a = count(customer);
+      
+    //  console.log(a)
+
+    //res.send({ status: true, text: 'data_customer', data_customer: customer })
+
   });
-});
 
-router.post('/', (req, res, next) => {
-  if(validSticker(req.body)) {
-    queries.create(req.body).then(stickers => {
-      res.json(stickers[0]);
-    });
-  } else {
-    next(new Error('Invalid sticker'));
-  }
-});
 
-router.put('/:id', isValidId, (req, res, next) => {
-  if(validSticker(req.body)) {
-    queries.update(req.params.id, req.body).then(stickers => {
-      res.json(stickers[0]);
-    });
-  } else {
-    next(new Error('Invalid sticker'));
-  }
-});
+})
 
-router.delete('/:id', isValidId, (req, res) => {
-  queries.delete(req.params.id).then(() => {
-    res.json({
-      deleted: true
-    });
+
+router.post('/list_customer', (req, res) => {
+
+  query_customer.getListCustomer().then(customer => {
+
+    res.send({ status: true, text: 'data_customer', data_customer: customer })
+
   });
+
 });
-*/
+
+
+
+router.post('/detail_customer',  upload.any('image'), function(req, res, next){  
+
+   var id = req.body.customer_id; 
+
+   console.log(id)
+
+  query_customer.getCustomerId(id).then(customer => {
+
+    res.send({ status: true, text: 'detail customer', detail_customer: customer })
+
+  });
+
+});
+
 module.exports = router;

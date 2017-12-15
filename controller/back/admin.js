@@ -19,7 +19,10 @@ router.post('/oke',Auth_mdw.check_token,  function(req, res, next) {
 router.post('/add_admin', function(req,res){
 
 	req.checkBody("user_level_id", "User Level is required.").notEmpty(); 
-/*    req.checkBody("user_name", "Name is required.").notEmpty(); 
+
+  
+/*    
+    req.checkBody("user_name", "Name is required.").notEmpty(); 
     req.checkBody("user_email", "Enter a valid email address.").notEmpty().isEmail();
     req.checkBody("user_username", "Username is required").notEmpty();
     req.checkBody("user_password", "Password is required.").notEmpty();*/

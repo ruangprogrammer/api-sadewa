@@ -26,6 +26,13 @@ module.exports = {
               where('user_id', id).
                 update({user_token:token,
                         user_token_expired:token_expired});
+  },
+
+
+  check_token(token){
+
+    return knex('_user').where({user_token: token});
+
   }
 
 }

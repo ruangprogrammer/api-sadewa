@@ -72,7 +72,7 @@ router.post('/login',upload.single(), function(req,res) {   //ok
 });
 
 
-router.post('/register', upload.single('user_photo'), function(req, res, next){
+router.post('/register', upload.single('user_photo'), function(req, res, next){   //ketika dikirim melalui post harus user_foto 
 
     req.checkBody("user_level_id", "level id is required.").notEmpty(); 
     req.checkBody("user_name", "Name is required.").notEmpty(); 
@@ -96,6 +96,7 @@ router.post('/register', upload.single('user_photo'), function(req, res, next){
       var user_username = req.body.user_username;
       var user_password = req.body.user_password;
       var user_status   = req.body.user_status;
+
       var user_photo    = req.file.filename;   //console.log(user_photo)
       var user_token    = req.body.user_token;
 
@@ -112,8 +113,40 @@ router.post('/register', upload.single('user_photo'), function(req, res, next){
 
 });
 
+
+router.post('/cek', upload.single(), function(req, res){
+
+    req.checkBody("user_token", "Token is required.").notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors) {
+      res.send(errors);
+      return;
+    } else {
+
+    var token = req.body.user_token;
+
+    query_user.check_token(token, req.body).then(user => {
+
+         if(user == '') {
+            
+              res.send({ status: false, text: 'token invalid' })
+          
+          } else{
+
+              res.send({ status: true, text: 'token valid' })
+          }
+
+    });
+
+  }
+
+});
+
+
 /*
-router.post('/check_token',Auth_mdw.check_token, function(req, res, next){
+MENGGUNAKAN MIDDLEWARES
+router.post('/cek',Auth_mdw.check_token, function(req, res, next){
 
   query_user.getAll().then(user => {
     res.send({ status: true, message: 'Login Berhasil',data_admin: user })
@@ -123,5 +156,6 @@ router.post('/check_token',Auth_mdw.check_token, function(req, res, next){
 });
 
 */
+
 
 module.exports = router;

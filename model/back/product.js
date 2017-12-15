@@ -3,6 +3,8 @@ const knex = require('../knex'); // the connection!
 module.exports = {
 
   getListCategory() {
+
+
     return knex('_product_category').map(function(row){
                         return knex('_product_category').where('product_cat_parent', row.product_cat_id).reduce(function(product, rows){
                         product.data.push({product_cat_id:row.product_cat_id,
@@ -14,14 +16,79 @@ module.exports = {
                         return product;
                        }, {n:0, data:[]}).then(function(prod){
                         return {product_cat_id: row.product_cat_id,
-                                product_cat_namse: row.product_cat_name,
+                                product_cat_name: row.product_cat_name,
                                 product_cat_image: row.product_cat_image,
                                 product_cat_parent: row.product_cat_parent,
                                 product_cat_level: row.product_cat_level,
-                                child : prod.data };
+                                children : prod.data };
                        });
                        });
+
+    
   },
+
+
+
+  addCategoryProduct(product_cat_parent,
+                       product_cat_level,
+                       product_cat_image,
+                       product_cat_desc,
+                       product_cat_status,
+                       product_cat_name){  
+
+            return knex('_product_category').insert({
+                              product_cat_parent: product_cat_parent,
+                              product_cat_level: product_cat_level,
+                              product_cat_image: product_cat_image,
+                              product_cat_status: product_cat_status,
+                              product_cat_name: product_cat_name
+                            })
+                  .then(function(product_cat_id){
+            return knex('_product_category_lang').insert({
+                              product_cat_name:product_cat_name,
+                              product_cat_desc:product_cat_desc,
+                              product_cat_id:product_cat_id
+                            })
+
+                  })
+  
+
+  },
+
+
+
+  getListProduct(){
+
+    return knex.select('*').
+             from('_product')
+              .innerJoin('_product_lang','_product_lang.product_id','_product.product_id')
+              .innerJoin('_merchant','_merchant.merchant_id','_product.product_id')
+              .innerJoin('_product_category_lang','_product_category_lang.product_cat_id',  '_product.product_cat_id')
+              .groupBy('product_name')
+              .orderBy('_product.product_id', 'desc')
+              .map(function(row){
+
+
+                        return knex('_media').where('data_id', row.product_id).andWhere('media_primary','1').reduce(function(product, rows){
+                        product.data.push({media_primary: rows.media_primary,
+                                           media_value: 'http://sadewa.com/product/'+rows.media_value
+                       });
+                        product.n++;
+                        return product;
+                       }, {n:0, data:[]}).then(function(prod){
+                        return {product_id: row.product_id,
+                                product_name: row.product_name,
+                                merchant_name: row.merchant_name,
+                                product_price_min_range: row.product_price_min_range,
+                                product_status: row.product_status,
+                                product_cat_name: row.product_cat_name,
+                                data_image: prod.data };
+                       });
+
+
+                  });
+  },
+
 
   getProductID(id){
 
@@ -31,6 +98,8 @@ module.exports = {
               .innerJoin('_merchant','_merchant.merchant_id','_product.product_id')
               .innerJoin('_product_category_lang','_product_category_lang.product_cat_id',  '_product.product_cat_id')
             .where('_product.product_id', id).limit(1).map(function(row){
+
+
                         return knex('_media').where('data_id', row.product_id).reduce(function(product, rows){
                         product.data.push({media_primary: rows.media_primary,
                                            media_value: 'http://sadewa.com/product/'+rows.media_value
@@ -45,10 +114,45 @@ module.exports = {
                                 product_status: row.product_status,
                                 product_cat_name: row.product_cat_name,
                                 data_image: prod.data };
-
                        });
 
-                       });
+
+                  });
+  },
+
+  getDetailEdit(id){
+
+/*
+      let a = []
+          return knex('_user_level_authority').select('module_id').where('user_level_id',id).then((rows)=>{
+              rows.map(function (element) {
+                  a.push(element.module_id)
+              })
+          }).then(()=>{*/
+              return knex.select('*').from('_product').then((rows)=>{
+
+                      let data = rows.map((element)=>{
+                         // element['merchant'] = false;
+                          return knex.select('*').from('_product_lang').where('product_id',element.product_id)
+                              .then((docs)=>{
+                                  element['product_lang'] = docs
+                                  return element
+                              })
+
+                      })
+
+                      return Promise.all(data)
+                  })
+       //   })
+
+
+          ////PRODUCT DETAIl START
+
+          //return knex('_product').limit(2);
+
+          ////PRODUCT DETAIL END 
+          
+
   },
 
 
@@ -128,10 +232,12 @@ module.exports = {
       return knex('_product_lang').insert({product_id:product_id,
                                            product_shortdesc:product_shortdesc,
                                            product_desc:product_desc}).then(function(media){
-        var data_media = [];
-        media_value.forEach(data=>{
-        data_media.push({data_id:product_id,media_name:product_name,media_value : data.filename})
-       })     
+          var data_media = [];
+          media_value.forEach(data=>{
+          data_media.push({data_id:product_id,media_name:product_name,media_value : data.filename})
+         })     
+
+        
         return  knex('_media').insert(data_media);
         
        });

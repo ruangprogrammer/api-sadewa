@@ -45,6 +45,28 @@ router.post('/user_add', function(req,res){
 });
 
 
+router.post('/user_edit', (req, res, next) => {
+
+  query_user.getUseEditLevel().then(user => {
+    res.send({ status: true, text: 'data User ',data_level: user })
+    next();
+  });
+
+
+});
+
+
+router.post('/user_save', (req, res, next) => {
+
+  query_user.getUserLevelSave().then(user => {
+    res.send({ status: true, text: 'update success'})
+    next();
+  });
+
+
+});
+
+
 
 router.post('/userlevel', (req, res, next) => {
 

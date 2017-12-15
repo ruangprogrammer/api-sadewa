@@ -1,5 +1,5 @@
 
-const SITE_HOST = "http://localhost:5000";
+const SITE_HOST = "http://192.168.100.25:5000";
 const MEDIA_HOST = SITE_HOST + "/media";
 const MEDIA_IMAGE_HOST = MEDIA_HOST + "/images";
 const MEDIA_VIDEO_HOST = MEDIA_HOST + "/videos";

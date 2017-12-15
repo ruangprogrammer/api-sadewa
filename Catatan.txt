@@ -161,6 +161,11 @@ https://docs.google.com/spreadsheets/d/1ScmFac1VT7X_bWGOpPrz_zznsqz0yqKmw45PnU8d
   3. PRODUCT
       a. list category
       b. add_category_product
+         cat_parent:412
+         cat_level:412
+         cat_desc:412
+         cat_status:1
+cat_name:412
       c. parent_category
       d. child_category
       e. add_product  http://localhost:5000/back/product/create
@@ -205,7 +210,32 @@ https://docs.google.com/spreadsheets/d/1ScmFac1VT7X_bWGOpPrz_zznsqz0yqKmw45PnU8d
 
       b. list_admin     http://localhost:5000/back/admin/list_admin
 
+   7. CONTENT
+      a.  add_category
 
+          
+      
+      b.  add_content
+
+          category_section_id:11
+          content_category:11
+          body.user_id:11
+          content_status:11
+          content_publish_date:11
+          content_title:111
+          content_short_desc:11
+          content_desc:111
+
+          
+      c.  list content
+
+      d.  list category 
+        http://localhost:5000/back/content/add_category
+        section_id:26
+        category_name:Hijab Jogja Store
+        category_desc:Hijaber Herga kelas mahasiswi
+        category_status:1
+        token:oke
 
 http://vlad-ignatov.github.io/react-numeric-input/  sinau react
 Expected corresponding JSX closing tag for 

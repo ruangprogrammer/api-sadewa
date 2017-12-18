@@ -290,8 +290,70 @@ module.exports = {
                   content_desc:content_desc
                 })
 
-      }
+      },
 
+
+      save_content(content_id, //5
+                   section_id,
+                   cat_id,
+                   content_name,
+                   content_shortdesc,
+                   content_image,
+                   content_desc,
+                   content_status,
+                   content_publish_date){   
+        return knex('_content')
+                .where('content_id',content_id) //5
+                .update({
+                    cat_id: cat_id,
+                    content_status: content_status,
+                    content_publish_date: knex.fn.now()
+                }).then(function(data){
+                    return knex('_content_lang')
+                      .where('content_id',content_id)  //5
+                      .update({  //console.log()
+                        content_name : content_name,
+                        content_shortdesc : content_shortdesc,
+                        content_desc : content_desc
+  
+                      })
+                }).then(function(img){
+                    return knex('_media')
+                    .where('data_id',content_id)
+                    .andWhere('section_id',section_id)
+                    .update({
+                        media_value: content_image
+                    })
+                })
+
+      },
+
+      save_content_no(content_id, //5
+                   section_id,
+                   cat_id,
+                   content_name,
+                   content_shortdesc,
+                   content_desc,
+                   content_status,
+                   content_publish_date){   
+        return knex('_content')
+                .where('content_id',content_id) //5
+                .update({
+                    cat_id: cat_id,
+                    content_status: content_status,
+                    content_publish_date: knex.fn.now()
+                }).then(function(data){
+                    return knex('_content_lang')
+                      .where('content_id',content_id)  //5
+                      .update({  //console.log()
+                        content_name : content_name,
+                        content_shortdesc : content_shortdesc,
+                        content_desc : content_desc
+  
+                      })
+                })
+
+      }
 
 
 

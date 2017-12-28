@@ -22,6 +22,20 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage});//.single('image');
 
+var storage_cat = multer.diskStorage({
+    destination : function(req, file, cb ){
+      cb(null, 'media/');
+    },
+    filename : function(req, file, cb){
+      cb(null, 'product_' + file.fieldname + '-' + Date.now() + '.jpg');
+    }
+});
+var upload_cat = multer({ storage: storage_cat});//.single('image');
+
+
+
+
+
 /*    a. list category                         oke
       b. add_category_product                  oke
       c. parent_category                       urung
@@ -135,12 +149,25 @@ router.post('/select_cat_lang', upload.any('image'), function(req, res, next){
 
 router.post('/list_cat_lang', upload.any('image'), function(req, res, next){
 
-    query_product.getCatLang().then(cat => {
-    res.send({status: true, text: 'cattegory list found', cat_data: cat})
+    var product_cat_id  = req.body.product_cat_id;  // console.log(product_cat_id)
+
+    query_product.getCatLang(product_cat_id).then(cat => {
+
+
+        if(cat == ''){
+
+            res.send({status: false, text: 'cattegory list not found'})
+
+         }else{
+
+              res.send({status: true, text: 'cattegory list found', cat_data: cat})
+
+      }
+
+   
   });
 
 });
-
 
 
 router.post('/product_unit', upload.any('image'), function(req, res, next){
@@ -150,6 +177,218 @@ router.post('/product_unit', upload.any('image'), function(req, res, next){
   });
 
 });
+
+
+
+router.post('/detail_product_category', upload.any('image'), function(req, res, next){
+
+    var product_cat_id = req.body.product_cat_id;
+
+    query_product.detail_product_category(product_cat_id).then(product => {
+
+        if(product == ''){
+
+                res.send({status: false, text: 'detail category not found'})
+
+         }else{
+
+                res.send({status: true, text: 'detail category found', data_cat: product})
+
+      }
+
+
+ 
+  
+  });
+
+});
+
+
+
+router.post('/update_product_category',upload_cat.any('cat_file'), function(req,res) {      //OK
+
+  //res.json("jhagsdhjasaj");
+
+    var cat_id = req.body.cat_id;
+    var cat_name = req.body.cat_name;
+    var cat_sort_desc = req.body.cat_sort_desc;
+    var cat_desc = req.body.cat_desc;
+    var cat_status = req.body.cat_id;
+
+    var image = req.files;
+
+
+    if(image == ''){
+
+                 query_product.update_product_category_no_image(cat_id,cat_name,cat_sort_desc, cat_desc,cat_status).then(product_category => {
+              
+                if(product_category){
+
+                   res.send({status:true, text:"update cetegory success"})
+                  
+                  }else{   
+
+                   res.send({status:false, text:"update category failed" })
+                  
+                  }
+         
+        });
+
+    }else{
+
+         var cat_file = image[0].filename; 
+
+           query_product.update_product_category(cat_id,cat_name,cat_file,cat_sort_desc, cat_desc,cat_status).then(product_category => {
+                if(product_category){
+
+                   res.send({status:true, text:"update cetegory success"})
+                  
+                  }else{   
+
+                   res.send({status:false, text:"update category failed" })
+                  
+                  }
+         
+        });
+
+    }
+
+});
+
+
+router.post('/select_product_cat_lang', upload.any('image'), function(req, res, next){   
+
+
+
+    var product_cat_id = req.body.product_cat_id;  
+  //  var section_id     = req.body.section_id;   
+    let country_id     = []
+    let lang           = []
+
+     query_product.select_cat_lang(product_cat_id).then(select_lang => {  
+        select_lang.map((x,i)=>{
+          country_id.push(x.country_id)
+        })
+
+        query_product.country(country_id).then(response=>{
+          response.map((y,z)=>{
+            lang.push({value : y.country_id, label :y.country_name})
+          })
+          res.send({status:true,text:"language found", data: lang })
+        })
+
+
+    });
+
+
+
+   /* var product_cat_id = req.body.product_cat_id;
+
+    query_product.select_product_cat_lang(product_cat_id).then(product => {
+
+        if(product == ''){
+
+                res.send({status: false, text: 'product language not found'})
+
+         }else{
+
+                res.send({status: true, text: 'product language found', data_cat: product})
+
+      }
+
+
+ 
+  
+  });
+*/
+});
+
+router.post('/create_table', upload.any(), function(req,res){
+
+  //res.json("hell")
+ query_product.create_table().then(product => {
+
+        if(product == ''){
+
+                res.send({status: false, text: 'detail category not found'})
+
+         }else{
+
+                res.send({status: true, text: 'detail category found', data_cat: product})
+
+      }
+
+    })
+
+});
+
+//select_product_cat_lang
+//add_product_cat_lang
+/*  cat_language: INT, 
+       cat_name: "STRING", 
+       cat_desc: "TEXT"
+
+
+
+        product_cat_id
+        product_cat_name
+        product_cat_shortdesc
+        product_cat_desc
+        country_id
+
+
+*/
+router.post('/add_product_cat_lang', upload.any('image'), function(req, res, next){
+
+        var product_cat_id  = req.body.product_cat_id;
+        var product_cat_name = req.body.product_cat_name;
+        var product_cat_shortdesc = req.body.product_cat_shortdesc;
+        var product_cat_desc = req.body.product_cat_desc;
+        var country_id = req.body.country_id;
+
+    query_product.add_product_cat_lang(product_cat_id, product_cat_name, product_cat_shortdesc,product_cat_desc, country_id).then(product => {
+
+        if(product == ''){
+
+                res.send({status: false, text: 'category language add failed'})
+
+         }else{
+
+                res.send({status: true, text: 'category language add success'})
+
+      }
+
+  });
+
+});
+//update_product_cat_lang
+router.post('/update_product_cat_lang', upload.any('image'), function(req, res, next){
+
+    var product_cat_lang_id   = req.body.product_cat_lang_id;
+    var product_cat_name      = req.body.product_cat_name;
+    var product_cat_shortdesc = req.body.product_cat_shortdesc;
+    var product_cat_desc      = req.body.product_cat_desc;
+
+    query_product.update_product_cat_lang(product_cat_lang_id,product_cat_name,product_cat_shortdesc,product_cat_desc).then(product => {
+
+        if(product == ''){
+
+                res.send({status: false, text: 'detail category not found'})
+
+         }else{
+
+                res.send({status: true, text: 'detail category found', data_cat: product})
+
+      }
+
+
+ 
+  
+  });
+
+});
+
+
 
 
 router.post('/create', upload.any('image'),  function(req,res, next){
@@ -268,16 +507,45 @@ router.post('/create', upload.any('image'),  function(req,res, next){
 
 
 
+router.post('/search_umkm',  upload.any(), function(req, res, next){   //OKE
 
-router.post('/show', function(req, res, next){
+   var umkm_name = req.body.umkm_name;  console.log(umkm_name)
 
-   query_product.getShow().then(product => {
+   query_product.search_umkm(umkm_name).then(merchant => {
 
-      res.json(product);
+      res.json(merchant);
 
   });
 
 });
+
+
+router.post('/parent_category',  upload.any(), function(req, res, next){   //OKE
+
+   query_product.parent_category().then(product_category => {
+
+          res.send({status : true, text : "parent category found", data_cat : product_category})
+
+  });
+
+});
+
+router.post('/child_category',  upload.any(), function(req, res, next){   //OKE
+
+  var product_cat_parent = req.body.product_cat_parent;
+
+   query_product.child_category(product_cat_parent).then(child_category => {
+
+          res.send({status : true, text : "parent category found", data_cat : child_category})
+
+  });
+
+});
+
+
+
+
+
 
 //})
     //console.log(req.files);

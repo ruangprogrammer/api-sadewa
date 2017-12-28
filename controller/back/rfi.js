@@ -52,6 +52,17 @@ router.post('/add_message',  upload.any('image'), function(req, res){
 });
 
 
+router.post('/detail',  upload.any('image'), function(req, res){   
+
+  var quotation_rfi_number = req.body.quotation_rfi_number;
+
+  query_rfi.detail(quotation_rfi_number).then(rfi => {
+    res.send({status: true, text: 'detail rfi found', data_rfi: rfi, quotation_id: rfi[0]['quotation_id'], quotation_rfi_number: quotation_rfi_number})
+  });
+
+});
+
+
 
 
 module.exports = router;

@@ -164,20 +164,78 @@ module.exports = {
 
       },
 
+       detail_category(category_id,section_id){   // console.log(category_id+" dan "+section_id)
 
-/*      cekLang(content_id){
+        return knex.select('*').from('_category')
+                    .where('cat_id',category_id)
+                    .andWhere('section_id',section_id).map(function(data){
+                      return {
+                        category_id: data.cat_id,
+                        category_name: data.cat_name,
+                        category_desc: data.cat_desc,
+                        category_image: config.MEDIA_HOST + "/" + data.cat_image,
+                        category_status: data.cat_status
+                      }
+                    })
 
-        return knex('_content_lang')
-                .where('content_id',content_id)
 
       },
 
-      getCountry(){
+      edit_category(category_id,section_id){   // console.log(category_id+" dan "+section_id)
 
-        return knex.select('country_id as value', '')
-                
+        return knex.select('*').from('_category')
+                    .where('cat_id',category_id)
+                    .andWhere('section_id',section_id).map(function(data){
+                      return {
+                        category_id: data.cat_id,
+                        category_name: data.cat_name,
+                        category_desc: data.cat_desc,
+                        category_image: config.MEDIA_HOST + "/" + data.cat_image,
+                        category_status: data.cat_status
+                      }
+                    })
+
+
       },
-*/
+
+     update_category_no_image(category_id,
+                  section_id,
+                  category_name,
+                  category_desc,
+                  category_status){  
+
+                    return knex('_category')
+                              .where('cat_id',category_id)
+                              .andWhere('section_id',section_id)
+                              .update({section_id:section_id,
+                                       cat_name:category_name,
+                                       cat_desc: category_desc,
+                                       cat_status: category_status,
+                                     });
+
+      },
+
+      update_category(category_id,
+                  section_id,
+                  category_name,
+                  category_desc,
+                  category_image,
+                  category_status){  
+
+                    return knex('_category')
+                              .where('cat_id',category_id)
+                              .andWhere('section_id',section_id)
+                              .update({section_id:section_id,
+                                       cat_name:category_name,
+                                       cat_desc: category_desc,
+                                       cat_image: category_image,
+                                       cat_status: category_status,
+                                     });
+
+      },
+
+
+
 
       selectLang(content_id,section_id){
 
@@ -209,7 +267,7 @@ module.exports = {
 
       },
 
-      detailContent(content_id){ //console.log(content_id)
+      detailContent(content_id){ 
 
         return knex('_content_lang')
                     .innerJoin('_country','_country.country_id','_content_lang.country_id')
@@ -227,7 +285,7 @@ module.exports = {
 
       },
 
-      detailCategory(content_id){ //console.log(content_id)  //urung
+      detailCategory(content_id){ 
 
         return knex('_content_lang')
                     .where('content_id',content_id)
@@ -293,7 +351,7 @@ module.exports = {
       },
 
 
-      save_content(content_id, //5
+      save_content(content_id,
                    section_id,
                    cat_id,
                    content_name,
@@ -303,15 +361,15 @@ module.exports = {
                    content_status,
                    content_publish_date){   
         return knex('_content')
-                .where('content_id',content_id) //5
+                .where('content_id',content_id) 
                 .update({
                     cat_id: cat_id,
                     content_status: content_status,
                     content_publish_date: knex.fn.now()
                 }).then(function(data){
                     return knex('_content_lang')
-                      .where('content_id',content_id)  //5
-                      .update({  //console.log()
+                      .where('content_id',content_id)  
+                      .update({ 
                         content_name : content_name,
                         content_shortdesc : content_shortdesc,
                         content_desc : content_desc
@@ -328,7 +386,7 @@ module.exports = {
 
       },
 
-      save_content_no(content_id, //5
+      save_content_no(content_id, 
                    section_id,
                    cat_id,
                    content_name,
@@ -337,15 +395,15 @@ module.exports = {
                    content_status,
                    content_publish_date){   
         return knex('_content')
-                .where('content_id',content_id) //5
+                .where('content_id',content_id) 
                 .update({
                     cat_id: cat_id,
                     content_status: content_status,
                     content_publish_date: knex.fn.now()
                 }).then(function(data){
                     return knex('_content_lang')
-                      .where('content_id',content_id)  //5
-                      .update({  //console.log()
+                      .where('content_id',content_id)  
+                      .update({  
                         content_name : content_name,
                         content_shortdesc : content_shortdesc,
                         content_desc : content_desc

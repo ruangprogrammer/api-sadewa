@@ -189,7 +189,7 @@ router.post('/add_category',upload_category.single('category_image'), function(r
             
             }else{   
 
-             res.send({status:true, text:"add category failed" })
+             res.send({status:false, text:"add category failed" })
             
             }
    
@@ -203,9 +203,13 @@ router.post('/list_category', upload.single(), (req, res) => {
     req.checkBody("section_id", "section is required.").notEmpty(); 
  
     var errors = req.validationErrors();
+
     if (errors) {
+
       res.send(errors);
+
       return;
+
     } else {
 
      var id = req.body.section_id;   
@@ -216,11 +220,11 @@ router.post('/list_category', upload.single(), (req, res) => {
 
           res.send({status:false,text:"data content not found", data_content: [] })
 
-       }else{
+         }else{
 
-          res.send({status:true,text:"data content found",data_content:content})
+            res.send({status:true,text:"data content found",data_content:content})
 
-    }
+      }
 
     });
 
@@ -254,7 +258,7 @@ router.post('/delete_category', upload.single(), (req, res) => {
 });
 
 
-
+/*
 
 router.post('/detail_category', upload.single(), (req, res) => {  
 
@@ -274,18 +278,18 @@ router.post('/detail_category', upload.single(), (req, res) => {
 
           res.send({status:false,text:"data content not found", data_content: [] })
 
-       }else{
+         }else{
 
-          res.send({status:true,text:"data content found",data_content:content})
+            res.send({status:true,text:"data content found",data_content:content})
 
-    }
+      }
 
     });
 
    }
 
 });
-
+*/
 
 
 router.post('/select_category', upload.single(), (req, res) => {  
@@ -388,16 +392,110 @@ router.post('/detail_content', upload.single(), (req, res) => {
 
 router.post('/detail_category', upload.single(), (req, res) => {    
 
-     var content_id =  req.body.content_id;
+  //res.json('hwteghdsjnmdkj')
 
-      query_content.detailCategory(content_id).then(data => {  
+     var category_id  =  req.body.category_id;  //console.log()
+     var section_id    =     req.body.section_id;  //console.log(section_id)
 
-        res.send({status:true,text:"content found", data: data})
+      query_content.detail_category(category_id,section_id).then(data => {  
+
+        if(data == ''){
+
+           res.send({status:false,text:"category not found", data:[]})
+
+         }else{
+
+              res.send({status:true,text:"category found",data:data})
+
+        }
     
 
     });
 
 });
+
+
+router.post('/edit_category', upload.single(), (req, res) => {    
+
+
+     var category_id  =  req.body.category_id;  //console.log()
+     var section_id    =     req.body.section_id;  //console.log(section_id)
+
+      query_content.edit_category(category_id,section_id).then(data => {  
+
+        if(data == ''){
+
+           res.send({status:false,text:"category not found", data:[]})
+
+         }else{
+
+              res.send({status:true,text:"category found",data:data})
+
+        }
+    
+
+    });
+
+});
+
+
+//file mung siji
+
+router.post('/update_category',upload_category.any('category_image'), function(req,res) {   
+    var category_id = req.body.category_id;
+    var section_id = req.body.section_id;
+    var category_name = req.body.category_name;
+    var category_desc = req.body.category_desc;
+    var image = req.files;
+ 
+    var category_status = req.body.category_status;
+
+
+    if(image == ''){
+
+                 query_content.update_category_no_image(category_id,
+                                     section_id,
+                                     category_name,
+                                     category_desc,
+                                     category_status).then(category => {
+                if(category){
+
+                   res.send({status:true, text:"add category success"})
+                  
+                  }else{   
+
+                   res.send({status:false, text:"add category failed" })
+                  
+                  }
+         
+        });
+
+    }else{
+
+         var category_image = image[0].filename; 
+
+           query_content.update_category(category_id,
+                                     section_id,
+                                     category_name,
+                                     category_desc,
+                                     category_image,
+                                     category_status).then(category => {
+                if(category){
+
+                   res.send({status:true, text:"add category success"})
+                  
+                  }else{   
+
+                   res.send({status:false, text:"add category failed" })
+                  
+                  }
+         
+        });
+
+    }
+
+});
+
 
 
 router.post('/edit_content', upload.single(), (req, res) => {   
@@ -471,7 +569,7 @@ router.post('/save_content_by_language', upload.single(), (req, res) => {
         }
       
 
-});
+  });
 
 });
 
@@ -484,8 +582,6 @@ router.post('/save_content', upload.any("content_image"), (req, res) => {
      var content_name = req.body.content_title;
      var content_shortdesc = req.body.content_shortdesc;
      var image = req.files;
-     
-   //  console.log(content_image);
      var content_desc = req.body.content_desc;
      var content_status = req.body.content_status;
      var content_publish_date = req.body.content_publish_date;
@@ -513,12 +609,12 @@ router.post('/save_content', upload.any("content_image"), (req, res) => {
               
 
         });
-     // console.log("KOSONG")
+     
 
      }else{
 
-               var content_image = image[0].filename; console.log(content_image)
 
+               var content_image = image[0].filename; 
                 query_content.save_content(content_id,
                                         section_id,
                                         cat_id,
@@ -528,7 +624,7 @@ router.post('/save_content', upload.any("content_image"), (req, res) => {
                                         content_desc,
                                         content_status,
                                         content_publish_date).then(data => {  
-
+               
                   if(data == ''){
 
                       res.send({status:false,text:"edit content failed"})
@@ -541,20 +637,16 @@ router.post('/save_content', upload.any("content_image"), (req, res) => {
               
 
         });
-      //console.log("ISI")
-     // 
+ 
      }
-    
-    //console.log(content_image)
-
-
-
-     //console.log(content_image)
-
+   
 
    
 
 });
+
+
+
 
 
 

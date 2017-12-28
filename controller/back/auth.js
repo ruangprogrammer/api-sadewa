@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const query_user = require('../../model/back/auth');
 const Auth_mdw = require('../../middlewares/auth');
+
 const router = express.Router();
 
 /////////////

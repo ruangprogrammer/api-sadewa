@@ -27,9 +27,9 @@ router.post('/count', (req,res) =>{
 
  query_customer.getListCustomer().then(customer => {
 
-      var a = count(customer);
-      
-    //  console.log(a)
+     // var a = count(customer.length);
+      var b = "test";
+      //  console.log(customer)
 
     //res.send({ status: true, text: 'data_customer', data_customer: customer })
 
@@ -41,9 +41,12 @@ router.post('/count', (req,res) =>{
 
 router.post('/list_customer', (req, res) => {
 
-  query_customer.getListCustomer().then(customer => {
+  var begin_index = req.body.begin_index;    console.log(begin_index)
 
-    res.send({ status: true, text: 'data_customer', data_customer: customer })
+  query_customer.getListCustomer(begin_index).then(customer => {
+    //res.send(customer)
+
+    res.send({ status: true, text: 'data_customer', data_customer: customer.data_customer, data_count: customer.data_count  })
 
   });
 

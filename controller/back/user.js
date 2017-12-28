@@ -46,9 +46,18 @@ router.post('/user_add', function(req,res){
 
 
 router.post('/user_edit', (req, res, next) => {
+  var user_level_id = req.body.user_level_id;  
 
-  query_user.getUseEditLevel().then(user => {
-    res.send({ status: true, text: 'data User ',data_level: user })
+  let data = [];
+  query_user.getUseEditLevel(user_level_id).then(user => {
+
+    user.map((x,i)=>{
+      data.push(x.module_id)
+    })
+
+    res.send({ status: true, text: 'data User ',data_level: data})
+
+
     next();
   });
 
@@ -56,11 +65,22 @@ router.post('/user_edit', (req, res, next) => {
 });
 
 
-router.post('/user_save', (req, res, next) => {
+router.post('/user_save', (req, res) => {
+  
+  var user_level_id = req.body.user_level_id;  
+  
+  var module_id = JSON.parse(req.body.module_id);
 
-  query_user.getUserLevelSave().then(user => {
+ // var module_id = req.body.module_id;
+  //res.send(JSON.parse(module_id))
+
+
+  query_user.user_save(user_level_id,module_id).then(user => {
+
     res.send({ status: true, text: 'update success'})
-    next();
+
+   // next();
+
   });
 
 
@@ -77,6 +97,19 @@ router.post('/userlevel', (req, res, next) => {
 
 
 });
+
+
+
+router.post('/access', (req, res, next) => {
+
+  query_user.getUserAll().then(user => {
+    res.send({ status: true, text: 'Items ',data: {items :user} })
+    next();
+  });
+
+
+});
+
 
 
 module.exports = router;

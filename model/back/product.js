@@ -1,4 +1,5 @@
 const knex = require('../knex'); // the connection!
+const config = require('../../config');
 
 module.exports = {
 
@@ -99,7 +100,6 @@ module.exports = {
               .innerJoin('_product_category_lang','_product_category_lang.product_cat_id',  '_product.product_cat_id')
             .where('_product.product_id', id).limit(1).map(function(row){
 
-
                         return knex('_media').where('data_id', row.product_id).reduce(function(product, rows){
                         product.data.push({media_primary: rows.media_primary,
                                            media_value: 'http://sadewa.com/product/'+rows.media_value
@@ -122,6 +122,22 @@ module.exports = {
 
   getDetailEdit(id){
 
+    return knex('_product')
+            .where('product_id',id).map(function(product_id){
+
+                  return knex('_merchant')              
+
+            })
+
+    //sub
+    //merchant_name
+    //product_cat
+    //product_unit
+    //product_unit_prymari
+    //product_tags
+    //product_images
+
+
 /*
       let a = []
           return knex('_user_level_authority').select('module_id').where('user_level_id',id).then((rows)=>{
@@ -129,7 +145,7 @@ module.exports = {
                   a.push(element.module_id)
               })
           }).then(()=>{*/
-              return knex.select('*').from('_product').then((rows)=>{
+             /* return knex.select('*').from('_product').then((rows)=>{
 
                       let data = rows.map((element)=>{
                          // element['merchant'] = false;
@@ -142,7 +158,7 @@ module.exports = {
                       })
 
                       return Promise.all(data)
-                  })
+                  })*/
        //   })
 
 
@@ -164,22 +180,24 @@ module.exports = {
 
 
 
-  getCatLang(){
+  getCatLang(product_cat_id){ console.log(product_cat_id)
 
     return knex.select('product_cat_desc',//'CONCAT(http://sadewa/, merchant_logo) as merchant_logo', CONCAT("http://sadewa.cyberumkm.com/uploads/images/user/",merchant_logo) as merchant_logo
                   'product_cat_shortdesc',
                   'product_cat_lang_id',
                   'product_cat_name',
                   'country_name',
-                  'country_iso_code_2').
-            from('_country').innerJoin('_product_category_lang', '_country.country_id', '_product_category_lang.country_id');
+                  'country_iso_code_2')
+            .from('_country').innerJoin('_product_category_lang', '_country.country_id', '_product_category_lang.country_id')
+            .where('_product_category_lang.product_cat_id',product_cat_id );
 
   },
 
 
   getProductUnit(){
 
-    return knex.select('unit_id as value','unit_text as label').from('_unit_lang');
+    return knex.select('unit_id as value','unit_text as label')
+              .from('_unit_lang');
 
   },
 
@@ -286,10 +304,174 @@ module.exports = {
                       user_token:user_token});
   },
   update(id, product) {
+    
     return knex('product').where('id', id).update(product, '*');
+
   },
   delete(id) {
+
     return knex('product').where('id', id).del();
+  
+  },
+
+  search_umkm(umkm_name){
+
+    return knex('_merchant').where('merchant_name', 'like', '%'+umkm_name+'%')
+              .map(function(data_merchant){
+                return {
+                    value: data_merchant.merchant_id,
+                    label: data_merchant.merchant_name
+                }
+              })
+
+  },
+
+  parent_category(){
+
+    return knex('_product_category')
+            .map(function(category){
+
+                return {
+                  value: category.product_cat_id,
+                  label: category.product_cat_name
+                }
+
+            })
+
+
+  },
+
+  child_category(product_cat_parent ){
+
+     return knex('_product_category')
+            .where('product_cat_parent',product_cat_parent)
+            .map(function(category){
+                return {
+                  value: category.product_cat_id,
+                  label: category.product_cat_name
+                }
+            })
+
+  },
+
+  detail_product_category(product_cat_id){
+
+     return knex('_product_category')
+            .innerJoin('_product_category_lang','_product_category.product_cat_id','_product_category_lang.product_cat_id')
+            .where('_product_category_lang.country_id','=','1')
+            .where('_product_category.product_cat_id',product_cat_id)
+            .map(function(category){
+                return {
+                  product_cat_level : category.product_cat_level,
+                  product_cat_status : category.product_cat_status,
+                  product_cat_name : category.product_cat_name,
+                  product_cat_id : category.product_cat_id,
+                  product_cat_image :  config.MEDIA_HOST + "/" + category.product_cat_image,
+                  product_cat_shortdesc: category.product_cat_shortdesc,
+                  product_cat_desc : category.product_cat_desc
+               
+                }
+            })
+
+  },
+
+  update_product_category_no_image(cat_id,cat_name,cat_sort_desc, cat_desc,cat_status){
+
+             return knex('_product_category')
+                  .where('product_cat_id',cat_id)
+                  .update({product_cat_name: cat_name,
+                           product_cat_status: cat_status
+                         }).then(function(product_lang){
+
+                          return knex('_product_category_lang')
+                                  .where('product_cat_id',cat_id)
+                                  .update({
+                                    product_cat_name: cat_name,
+                                    product_cat_shortdesc : cat_sort_desc,
+                                    product_cat_desc:cat_desc
+                                  })
+
+                         })
+
+  },
+
+  update_product_category(cat_id,cat_name,cat_file,cat_sort_desc, cat_desc,cat_status){
+
+      return knex('_product_category')
+                  .where('product_cat_id',cat_id)
+                  .update({product_cat_name: cat_name,
+                           product_cat_image: cat_file,
+                           product_cat_status: cat_status
+                         }).then(function(product_lang){
+
+                          return knex('_product_category_lang')
+                                  .where('product_cat_id',cat_id)
+                                  .update({
+                                    product_cat_name: cat_name,
+                                    product_cat_shortdesc : cat_sort_desc,
+                                    product_cat_desc:cat_desc
+                                  })
+
+                         })
+
+
+  },
+
+
+ 
+  select_cat_lang(product_cat_id){
+  return knex('_product_category_lang')
+              .select('country_id')
+              .where('product_cat_id',product_cat_id)
+  },
+
+  country(country_id){
+  return knex('_country')
+              .whereNotIn('country_id',country_id)
+
+
+  },
+
+
+  add_product_cat_lang(product_cat_id, product_cat_name, product_cat_shortdesc,product_cat_desc, country_id){
+
+    return knex('_product_category_lang')
+              .insert({
+                  product_cat_id: product_cat_id,
+                  product_cat_name: product_cat_name,
+                  product_cat_shortdesc: product_cat_shortdesc,
+                  product_cat_desc: product_cat_desc,
+                  country_id: country_id
+              })
+
+
+  },
+
+  update_product_cat_lang(product_cat_lang_id,product_cat_name,product_cat_shortdesc,product_cat_desc){
+    return knex('_product_category_lang')
+              .where('product_cat_lang_id',product_cat_lang_id)
+              .update({
+                product_cat_name: product_cat_name,
+                product_cat_shortdesc: product_cat_shortdesc,
+                product_cat_desc: product_cat_desc,
+              })
+  },
+
+
+  create_table(){
+
+//  return  knex('_product_category_lang').limit(1)
+         return   knex.schema.createTable('ruangcoder', function(table) {
+            table.increments();
+            table.string('name');
+  /*          table.string('email', 128);
+            table.string('role').defaultTo('admin');
+            table.string('password');
+            table.timestamps();*/
+            }).toString()
   }
+
+
+
 
 }

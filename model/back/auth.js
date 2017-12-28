@@ -1,9 +1,27 @@
 const knex = require('../knex'); // the connection!
-
+const config = require('../../config');
 module.exports = {
 
   login(email,password,user) {
-    return knex('_user').where({user_email:email,user_password:password});
+    return knex('_user').where({user_email:email,user_password:password}).map(function(data_user){
+
+          return {
+
+              user_id: data_user.user_id,
+              user_level_id: data_user.user_level_id,
+              user_name: data_user.user_name,
+              user_email: data_user.user_email,
+              user_username: data_user.user_username,
+              user_is_login: data_user.user_is_login,
+              user_status: data_user.user_status,
+              user_photo: config.MEDIA_HOST + "/" + data_user.user_photo,
+
+          }
+
+    })
+
+
+
   },
 
   create(user_level_id,user_name,user_email,user_username,user_password,user_status,user_photo,user_token,user) {
